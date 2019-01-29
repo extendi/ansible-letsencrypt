@@ -40,6 +40,8 @@ The following variables are available:
 
 `ssl_certificate` and `ssl_certificate_key` symlinks the certificates to provided path if both are set.
 
+`letsencrypt_allowed_group` gives read permission to specified group on all certificates. Useful when application runs as non-root user.
+
 The [Let's Encrypt client](https://github.com/letsencrypt/letsencrypt) will put the certificate and accessories in `/etc/letsencrypt/live/<first listed domain>/`. For more info, see the [Let's Encrypt documentation](https://letsencrypt.readthedocs.org/en/latest/using.html#where-are-my-certificates).
 
 # Example Playbook

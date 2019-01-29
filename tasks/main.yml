@@ -104,3 +104,31 @@
         dest: "{{ssl_certificate}}"
       - src: /etc/letsencrypt/live/{{ letsencrypt_cert_domains[0] }}/privkey.pem
         dest: "{{ssl_certificate_key}}"
+
+  - name: Set permission on cert directories for allowed group
+    file:
+      path: "{{ item }}"
+      group: "{{ letsencrypt_allowed_group }}"
+      mode: "g=rx"
+    with_items:
+      - "/etc/letsencrypt/live"
+      - "/etc/letsencrypt/live/{{ letsencrypt_cert_domains[0] }}"
+      - "/etc/letsencrypt/archive"
+      - "/etc/letsencrypt/archive/{{ letsencrypt_cert_domains[0] }}"
+    when: letsencrypt_allowed_group is defined
+
+  - name: Get certificates list
+    find:
+      paths: "/etc/letsencrypt/archive/{{ letsencrypt_cert_domains[0] }}"
+      patterns: "*.pem"
+    register: letsencrypt_certlist
+    check_mode: no
+
+  - name: Set permission on certs for allowed group
+    file:
+      path: "{{ item.path }}"
+      group: "{{ letsencrypt_allowed_group }}"
+      mode: "g=r"
+    with_items:
+      - "{{ letsencrypt_certlist.files }}"
+    when: letsencrypt_allowed_group is defined
